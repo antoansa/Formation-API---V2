@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Animation de sprites aléatoires</title>
+    <style>
+        .sprite {
+            display: inline-block;
+            width: 70px;
+            height: 70px;
+            position: absolute;
+            animation: falling 3s linear 0s infinite backwards;
+            cursor: pointer;
+        }
+
+        @keyframes falling {
+            from {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(600px) rotate(360deg);
+                opacity: 0.5;
+            }
+        }
+
+        .root {
+            height: 600px;
+            background-color: rgb(19, 42, 51);
+            border: 1px solid darkgrey;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ground {
+            bottom: 0;
+            background-image: linear-gradient(to top, #fff 97%, 99%, #bbb 100%);
+            background-position: center 580px;
+            animation: snowpile linear 300s forwards;
+            border: 1px solid grey;
+            transform: translate3d(0, 0, 0);
+        }
+
+        @keyframes snowpile {
+            from {
+                background-position: center 580px;
+            }
+            to {
+                background-position: center 280px;
+            }
+        }
+
+        input:checked ~ .root .sprite {
+            animation-play-state: running;
+        }
+
+        input + label::before {
+            content: "Play ";
+        }
+
+        input:checked + label::before {
+            content: "Pause ";
+        }
+
+        #score {
+            font-size: 24px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <input type="checkbox" id="animate" aria-label="Toggle the play state of the animation" />
+    <label for="animate">the animation</label>
+    <div class="root">
+        <div class="ground"></div>
+    </div>
+    <div id="score">Score: 0</div>
+
+    <script>
+        const spriteImages = [
+            'img/bardella.png',
+            'img/xi.png',
+            'img/pen.png',
+            'img/poutine.png',
+            'img/trump.png',
+
+
+            // Ajoutez d'autres URL d'images ici
+        ];
+
+        let score = 0;
+
+        function updateScore() {
+            score++;
+            document.getElementById('score').textContent = `Score: ${score}`;
+        }
+
+        function getRandomImage() {
+            const randomIndex = Math.floor(Math.random() * spriteImages.length);
+            return spriteImages[randomIndex];
+        }
+
+        function createSprite() {
+            const img = document.createElement('img');
+            img.src = getRandomImage();
+            img.className = 'sprite';
+            img.style.left = `${Math.random() * window.innerWidth}px`;
+            img.style.animationDuration = `${Math.random() * 5 + 3}s`;
+            img.style.animationDelay = `${Math.random() * 5}s`;
+
+            img.addEventListener('click', updateScore);
+
+            return img;
+        }
+
+        function addSprites(numberOfSprites) {
+            const container = document.querySelector('.root');
+            for (let i = 0; i < numberOfSprites; i++) {
+                const sprite = createSprite();
+                container.appendChild(sprite);
+            }
+        }
+
+        addSprites(50); // Ajoute 50 sprites à l'animation
+    </script>
+</body>
+</html>
